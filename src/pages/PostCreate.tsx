@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../api/api"; // axios 설정된 api.ts 파일 사용
+import api from "../api/api";
 import { motion } from "framer-motion";
 
 const PostCreate = () => {

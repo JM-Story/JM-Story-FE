@@ -1,9 +1,7 @@
 import PostList from "../components/PostList";
-import { useState } from "react";
 import { motion } from "framer-motion";
 
 const PostPage = () => {
-  const [activeTab, setActiveTab] = useState("posts");
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -90,6 +88,7 @@ const PostPage = () => {
       <div className="container mx-auto py-12">
         <div className="max-w-4xl mx-auto px-4">
           <motion.div
+            key={activeTab}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -112,14 +111,14 @@ const PostPage = () => {
                     whileHover={{ x: 10 }}
                   >
                     <span className="mr-3">📧</span>
-                    Email: contact@example.com
+                    Email: dlwjdals7073@gmail.com
                   </motion.p>
                   <motion.p 
                     className="flex items-center"
                     whileHover={{ x: 10 }}
                   >
                     <span className="mr-3">📞</span>
-                    Tel: 02-1234-5678
+                    Tel: 010-4365-4520
                   </motion.p>
                 </div>
               </div>
@@ -137,7 +136,7 @@ const PostPage = () => {
       >
         <div className="container mx-auto text-center text-white">
           <p className="text-lg mb-4">함께 만들어가는 우리의 이야기</p>
-          <p className="text-sm text-gray-400">© 2024 Our Community. All rights reserved.</p>
+          <p className="text-sm text-gray-400">© 2025 Our Community. All rights reserved.</p>
         </div>
       </motion.div>
     </div>
