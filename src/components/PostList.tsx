@@ -1,23 +1,34 @@
-import { posts } from "../data";
+import { useNavigate } from "react-router-dom";
+import PostList from "../components/PostList";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
-const PostList = () => {
+const PostPage = () => {
+  const [activeTab, setActiveTab] = useState("posts");
+  const navigate = useNavigate();
+
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">📜 게시글 목록</h1>
-      <div className="space-y-6">
-        {posts.map((post) => (
-          <div key={post.id} className="bg-white p-4 rounded-lg shadow-md border">
-            <h2 className="text-xl font-semibold text-gray-900">{post.title}</h2>
-            <p className="text-gray-600 mt-2">{post.content}</p>
-            <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
-              <span>✍️ {post.author}</span>
-              <span>{post.createdAt}</span>
-            </div>
-          </div>
-        ))}
+    <div className="min-h-screen relative overflow-hidden">
+      {/* 게시글 생성 버튼 */}
+      <div className="container mx-auto mt-6 flex justify-end">
+        <motion.button
+          className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate("/create")}
+        >
+          ➕ 게시글 작성
+        </motion.button>
+      </div>
+
+      {/* 기존 코드 (게시글 목록) */}
+      <div className="container mx-auto py-12">
+        <div className="max-w-4xl mx-auto px-4">
+          {activeTab === "posts" && <PostList />}
+        </div>
       </div>
     </div>
   );
 };
 
-export default PostList;
+export default PostPage;
