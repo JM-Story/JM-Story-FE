@@ -1,7 +1,9 @@
 import PostList from "../components/PostList";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 const PostPage = () => {
+  const [activeTab, setActiveTab] = useState("posts");
 
   return (
     <div className="min-h-screen relative overflow-hidden">
