@@ -1,1 +1,58 @@
+name: Deploy Frontend to S3 and Invalidate CloudFront
 
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ap-northeast-2
+  STAGE: dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 저장소 체크아웃
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 2. Node.js 설치
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      # 3. 의존성 설치 및 빌드
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
+      # 4. AWS CLI 설정
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # 5. SSM 파라미터에서 정보 가져오기
+      - name: Get S3 Bucket and CloudFront Distribution ID from SSM
+        id: ssm
+        run: |
+          S3_BUCKET=$(aws ssm get-parameter --name "/jm-story/${{ env.STAGE }}/S3_BUCKET" --query "Parameter.Value" --output text)
+          CLOUDFRONT_ID=$(aws ssm get-parameter --name "/jm-story/${{ env.STAGE }}/CLOUDFRONT_ID" --query "Parameter.Value" --output text)
+          echo "s3_bucket=$S3_BUCKET" >> $GITHUB_OUTPUT
+          echo "cloudfront_id=$CLOUDFRONT_ID" >> $GITHUB_OUTPUT
+
+      # 6. S3 업로드
+      - name: Sync to S3
+        run: |
+          aws s3 sync ./dist s3://${{ steps.ssm.outputs.s3_bucket }} --delete
+
+      # 7. CloudFront 캐시 무효화
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ steps.ssm.outputs.cloudfront_id }} --paths "/*"
