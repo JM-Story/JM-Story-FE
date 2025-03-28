@@ -24,6 +24,10 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Create .env file
+        run: |
+          echo "VITE_API_URL=https://dev-api.jm-story.site" > .env
+
       # 3. 의존성 설치 및 빌드
       - name: Install dependencies and build
         run: |
